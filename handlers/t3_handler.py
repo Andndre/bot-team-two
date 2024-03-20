@@ -17,7 +17,7 @@ def symbol_handler(teleBot: TeleBot, query_id, chat_id, message_id, symbol):
 	teleBot.bot.answerCallbackQuery(query_id, text=f'Anda memilih menjadi {symbol}, selamat bermain!')
 	game = TicTacToe(symbol)
 	teleBot.add_t3_game(message_id, game)
-	teleBot.bot.editMessageText((chat_id, message_id), f'Giliran {game.get_symbol_emoji_current()}')
+	teleBot.bot.editMessageText((chat_id, message_id), game.get_text_giliran())
 	teleBot.bot.editMessageReplyMarkup((chat_id, message_id), reply_markup=game.generate_markup())
 
 def get_pos_handler(row, col):
@@ -34,7 +34,7 @@ def get_pos_handler(row, col):
 				elif game.game_over == 'Draw':
 					teleBot.bot.editMessageText((chat_id, message_id), "Game Draw!")
 					return
-		teleBot.bot.editMessageText((chat_id, message_id), f'Giliran {game.get_symbol_emoji_current()} {"(Anda)" if game.choose_symbol == game.current_player else "(Bot)"}')
+		teleBot.bot.editMessageText((chat_id, message_id), game.get_text_giliran())
 		teleBot.bot.editMessageReplyMarkup((chat_id, message_id), reply_markup=game.generate_markup())
 	return handler
 

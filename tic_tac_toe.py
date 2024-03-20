@@ -11,7 +11,10 @@ class TicTacToe:
         self.choose_symbol = choose_symbol
         self.bot_symbol = 'X' if choose_symbol == 'O' else 'O'
         if choose_symbol == 'O':
-            self.make_move(1, 1, self.bot_symbol)
+            # Bot berjalan pertama
+            # self.make_ai_move() -> Akan menghasilkan pergerakan di (0, 0)
+            # Untuk mempersingkat waktu:
+            self.make_move(0, 0, self.bot_symbol)
     
     def generate_markup(self):
         buttons = InlineKeyboardMarkup(inline_keyboard=[
@@ -20,6 +23,9 @@ class TicTacToe:
             ] for i in range(3)
         ])
         return buttons
+
+    def get_text_giliran(self):
+        return f'Giliran {self.get_symbol_emoji_current()} {"(Anda)" if self.choose_symbol == self.current_player else "(Bot)"}'
     
     def make_ai_move(self):
         (i, j) = self.find_best_move()
@@ -96,7 +102,7 @@ class TicTacToe:
     def get_opponent(self):
         return self.player2 if self.current_player == self.player1 else self.player1
 
-    def minimax(self, depth, is_maximizing):
+    def minimax(self, depth, alpha, beta, is_maximizing):
         # Cek apakah ada pemenang
         winner = self.get_winner()
         if winner:
@@ -110,22 +116,36 @@ class TicTacToe:
         if is_maximizing:
             best_score = -float('inf')
             for i in range(3):
+                breaking = False
                 for j in range(3):
                     if self.board[i][j] == ' ':
                         self.board[i][j] = self.bot_symbol
-                        score = self.minimax(depth + 1, False)
+                        score = self.minimax(depth + 1, alpha, beta, False)
                         self.board[i][j] = ' '
                         best_score = max(score, best_score)
+                        alpha = max(alpha, score)
+                        if beta <= alpha:
+                            breaking = True
+                            break
+                if breaking:
+                    break
             return best_score
         else:
             best_score = float('inf')
             for i in range(3):
+                breaking = False
                 for j in range(3):
                     if self.board[i][j] == ' ':
                         self.board[i][j] = self.choose_symbol
-                        score = self.minimax(depth + 1, True)
+                        score = self.minimax(depth + 1, alpha, beta, True)
                         self.board[i][j] = ' '
                         best_score = min(score, best_score)
+                        beta = min(beta, score)
+                        if beta <= alpha:
+                            breaking = True
+                            break
+                if breaking:
+                    break
             return best_score
 
     def find_best_move(self):
@@ -135,7 +155,7 @@ class TicTacToe:
             for j in range(3):
                 if self.board[i][j] == ' ':
                     self.board[i][j] = self.bot_symbol
-                    score = self.minimax(0, False)
+                    score = self.minimax(0, -float('inf'), float('inf'), False)
                     self.board[i][j] = ' '
                     if score > best_score:
                         best_score = score
