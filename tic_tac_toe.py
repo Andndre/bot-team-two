@@ -1,4 +1,5 @@
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
+import random
 
 class TicTacToe:
     def __init__(self, choose_symbol: str):
@@ -10,7 +11,7 @@ class TicTacToe:
         self.choose_symbol = choose_symbol
         self.bot_symbol = 'X' if choose_symbol == 'O' else 'O'
         if choose_symbol == 'O':
-            self.make_ai_move()
+            self.make_move(1, 1, self.bot_symbol)
     
     def generate_markup(self):
         buttons = InlineKeyboardMarkup(inline_keyboard=[
@@ -91,12 +92,18 @@ class TicTacToe:
 
     def switch_player(self):
         self.current_player = self.player2 if self.current_player == self.player1 else self.player1
+    
+    def get_opponent(self):
+        return self.player2 if self.current_player == self.player1 else self.player1
 
     def minimax(self, depth, is_maximizing):
-        if self.is_winner(self.player1):
-            return -10 + depth
-        elif self.is_winner(self.player2):
-            return 10 - depth
+        # Cek apakah ada pemenang
+        winner = self.get_winner()
+        if winner:
+            if winner == self.bot_symbol:
+                return 10 - depth
+            else:
+                return depth - 10
         elif self.is_full():
             return 0
 
@@ -104,8 +111,8 @@ class TicTacToe:
             best_score = -float('inf')
             for i in range(3):
                 for j in range(3):
-                    if self.board[i][j] == ' ':#cek kotak kosong
-                        self.board[i][j] = self.player2
+                    if self.board[i][j] == ' ':
+                        self.board[i][j] = self.bot_symbol
                         score = self.minimax(depth + 1, False)
                         self.board[i][j] = ' '
                         best_score = max(score, best_score)
@@ -115,7 +122,7 @@ class TicTacToe:
             for i in range(3):
                 for j in range(3):
                     if self.board[i][j] == ' ':
-                        self.board[i][j] = self.player1
+                        self.board[i][j] = self.choose_symbol
                         score = self.minimax(depth + 1, True)
                         self.board[i][j] = ' '
                         best_score = min(score, best_score)
@@ -127,7 +134,7 @@ class TicTacToe:
         for i in range(3):
             for j in range(3):
                 if self.board[i][j] == ' ':
-                    self.board[i][j] = self.current_player
+                    self.board[i][j] = self.bot_symbol
                     score = self.minimax(0, False)
                     self.board[i][j] = ' '
                     if score > best_score:
