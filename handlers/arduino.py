@@ -25,3 +25,4 @@ def cek_jarak_handler(teleBot: TeleBot, query_id, chat_id, message_id):
 def add_arduino_handlers(teleBot: TeleBot):
 	teleBot.add_handler('toggle_lamp', toggle_lamp_handler)
 	teleBot.add_handler('cek_jarak', cek_jarak_handler)
+	

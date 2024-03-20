@@ -27,6 +27,12 @@ class TicTacToe:
     def get_text_giliran(self):
         return f'Giliran {self.get_symbol_emoji_current()} {"(Anda)" if self.choose_symbol == self.current_player else "(Bot)"}'
     
+    def get_text_game_over(self):
+        if self.game_over == 'Win':
+            return "Anda menang!" if self.current_player == self.choose_symbol else "Bot menang!"
+        elif self.game_over == 'Draw':
+            return "Game Draw!"
+    
     def make_ai_move(self):
         (i, j) = self.find_best_move()
         self.make_move(i, j, self.bot_symbol)

@@ -14,16 +14,14 @@ class TeleBot:
         self.t3_games: Dict[int, TicTacToe] = {}
         self.handlers: Dict[str, function] = {}
 
-    def get_main_menu_markup(self):
-        return InlineKeyboardMarkup(inline_keyboard=[
+    def handle_start(self, msg: Dict) -> None:
+        chat_id = msg['chat']['id']
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[
 			[InlineKeyboardButton(text=f'Lampu : {self.lamp_status}', callback_data='toggle_lamp')],
 			[InlineKeyboardButton(text='Cek Jarak', callback_data='cek_jarak')],
 			[InlineKeyboardButton(text='Main Tic Tac Toe', callback_data='tic_tac_toe')]
 		])
-    
-    def handle_start(self, msg: Dict) -> None:
-        keyboard = self.get_main_menu_markup()
-        self.bot.sendMessage(msg['chat']['id'], 'Halo selamat datang di Bot, silahkan pilih opsi dibawah:', reply_markup=keyboard)
+        self.bot.sendMessage(chat_id, 'Halo selamat datang di Bot, silahkan pilih opsi dibawah:', reply_markup=keyboard)
     
     def add_t3_game(self, message_id: int, game: TicTacToe) -> None:
         self.t3_games[message_id] = game
@@ -41,7 +39,7 @@ class TeleBot:
         self.handlers[command] = handler
 
     def on_callback_query(self, msg: Dict) -> None:
-        query_id, from_id, query_data = telepot.glance(msg, flavor='callback_query')
+        query_id, _, query_data = telepot.glance(msg, flavor='callback_query')
         chat_id = msg['message']['chat']['id']
         message_id = msg['message']['message_id']
 

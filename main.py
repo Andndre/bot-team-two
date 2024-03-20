@@ -1,6 +1,6 @@
 from bot import TeleBot
 from handlers.arduino import add_arduino_handlers
-from handlers.t3_handler import *
+from handlers.t3_handler import add_tic_tac_toe_handlers
 import os
 from dotenv import load_dotenv
 
