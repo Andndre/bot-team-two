@@ -4,7 +4,7 @@
 cp .env.example .env
 ```
 
-Ubah `BOT_TOKEN` dengan token bot telegram
+Ubah `TOKEN` dengan token bot telegram
 
 ```bash
 python main.py
