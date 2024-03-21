@@ -178,7 +178,6 @@ class TicTacToe:
         """
 
         # Cek apakah ada pemenang
-        # Cek apakah ada pemenang
         winner = self.get_winner()
         if winner:
             # Jika pemenang adalah player bot, maka nilai scorenya diubah menjadi
