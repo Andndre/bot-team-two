@@ -14,6 +14,7 @@ class TeleBot:
         self.lamp_status: str = "Off"
         self.t3_games: Dict[int, TicTacToe] = {}
         self.handlers: Dict[str, function] = {}
+        self.distance: int = None
 
     def handle_start(self, msg: Dict) -> None:
         """

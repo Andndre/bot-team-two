@@ -1,4 +1,5 @@
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
+import random
 
 class TicTacToe:
     def __init__(self, choose_symbol: str):
@@ -13,8 +14,12 @@ class TicTacToe:
             # Bot berjalan pertama
             # self.make_ai_move() -> Akan menghasilkan pergerakan di (0, 0)
             # Untuk mempersingkat waktu:
-            self.make_move(0, 0, self.bot_symbol)
+            self.make_random_move()
     
+    def make_random_move(self):
+        (i, j) = (random.randint(0, 2), random.randint(0, 2))
+        self.make_move(i, j, self.current_player)
+
     def generate_markup(self):
         """
         Menghasilkan tombol 3x3 berisi simbol X dan O sesuai state game saat ini
@@ -59,7 +64,7 @@ class TicTacToe:
         Mengecek apakah {player} menang
         """
         for i in range(3):
-            # Horizontal
+            # Horizontal    
             if all(self.board[i][j] == player for j in range(3)):
                 return True
 			# Vertikal
