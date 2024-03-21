@@ -1,8 +1,6 @@
 import telepot
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
 from telepot.loop import MessageLoop
-from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
-from telepot.loop import MessageLoop
 from typing import Dict
 from telepot import Bot
 from tic_tac_toe import TicTacToe
