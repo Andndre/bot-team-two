@@ -46,6 +46,7 @@ def get_pos_handler(row, col):
 			# Edit reply markup untuk menampilkan board baru
 			teleBot.bot.editMessageReplyMarkup(msg_id, reply_markup=game.generate_markup())
 	return handler
+
 def get_symbol_handler(symbol: str):
 	"""
 	Mengenerate handler untuk tombol simbol (pilihan X atau O sebelum permainan)

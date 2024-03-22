@@ -21,12 +21,19 @@ class TeleBot:
         Menangani pesan /start dan mengirimkan keyboard untuk memilih opsi
         """
         chat_id = msg['chat']['id']
-        keyboard = InlineKeyboardMarkup(inline_keyboard=[
-			[InlineKeyboardButton(text=f'Lampu : {self.lamp_status}', callback_data='toggle_lamp')],
-			[InlineKeyboardButton(text='Cek Jarak', callback_data='cek_jarak')],
-			[InlineKeyboardButton(text='Main Tic Tac Toe', callback_data='tic_tac_toe')]
-		])
-        self.bot.sendMessage(chat_id, 'Halo selamat datang di Bot, silahkan pilih opsi dibawah:', reply_markup=keyboard)
+        if msg['text'] == '/start':
+            self.bot.sendMessage(chat_id, """Untuk menggunakan Bot Tic Tac Toe, user harus mengikuti langkah-langkah berikut:
+- Pertama user harus menginput  "/mulai” di Telegram.
+- Kemudian, bot akan menampilkan output berupa opsi "Main Tic Tac Toe" yang bisa ditekan oleh user.
+- Setelah itu, bot akan memberikan opsi user untuk memilih giliran bermain duluan dengan "X” atau bermain setelah bot dengan "O” .
+- Terakhir, user akan bermain Tic Tac Toe dengan bot hingga bot mengeluarkan output "Anda Menang”, Bot Menang”, atau “Game Draw!”.""", parse_mode="Markdown")
+        elif msg['text'] == '/mulai':
+            keyboard = InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text=f'Lampu : {self.lamp_status}', callback_data='toggle_lamp')],
+                [InlineKeyboardButton(text='Cek Jarak', callback_data='cek_jarak')],
+                [InlineKeyboardButton(text='Main Tic Tac Toe', callback_data='tic_tac_toe')]
+            ])
+            self.bot.sendMessage(chat_id, 'Halo selamat datang di Bot, silahkan pilih opsi dibawah:', reply_markup=keyboard)
     
     def add_t3_game(self, message_id: int, game: TicTacToe) -> None:
         """
