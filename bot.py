@@ -16,18 +16,18 @@ class TeleBot:
         self.handlers: Dict[str, function] = {}
         self.distance: int = None
 
-    def handle_start(self, msg: Dict) -> None:
+    def handle_message(self, msg: Dict) -> None:
         """
-        Menangani pesan /start dan mengirimkan keyboard untuk memilih opsi
+        Menangani pesan pada bot telegram
         """
         chat_id = msg['chat']['id']
-        if msg['text'] == '/start':
+        if (msg['text'] == '/start') or (msg['text'] == '/start@Teamtwo_bot'):
             self.bot.sendMessage(chat_id, """Untuk menggunakan Bot Tic Tac Toe, user harus mengikuti langkah-langkah berikut:
 - Pertama user harus menginput  "/mulai” di Telegram.
-- Kemudian, bot akan menampilkan output berupa opsi "Main Tic Tac Toe" yang bisa ditekan oleh user.
+- Kemudian, bot akan menampilkan output berupa opsi *"Main Tic Tac Toe"* yang bisa ditekan oleh user.
 - Setelah itu, bot akan memberikan opsi user untuk memilih giliran bermain duluan dengan "X” atau bermain setelah bot dengan "O” .
-- Terakhir, user akan bermain Tic Tac Toe dengan bot hingga bot mengeluarkan output "Anda Menang”, Bot Menang”, atau “Game Draw!”.""", parse_mode="Markdown")
-        elif msg['text'] == '/mulai':
+- Terakhir, user akan bermain *Tic Tac Toe* dengan bot hingga bot mengeluarkan output "Anda Menang”, Bot Menang”, atau “Game Draw!”.""", parse_mode="Markdown")
+        elif (msg['text'] == '/mulai') or (msg['text'] == '/mulai@Teamtwo_bot'):
             keyboard = InlineKeyboardMarkup(inline_keyboard=[
                 [InlineKeyboardButton(text=f'Lampu : {self.lamp_status}', callback_data='toggle_lamp')],
                 [InlineKeyboardButton(text='Cek Jarak', callback_data='cek_jarak')],
@@ -51,7 +51,7 @@ class TeleBot:
         """
         Menjalankan bot dan menangani pesan dengan menggunakan `MessageLoop`
         """
-        MessageLoop(self.bot, {'chat': self.handle_start, 'callback_query': self.on_callback_query}).run_as_thread()
+        MessageLoop(self.bot, {'chat': self.handle_message, 'callback_query': self.on_callback_query}).run_as_thread()
         print('Bot sedang berjalan...')
         while True:
             pass
