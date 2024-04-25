@@ -2,31 +2,39 @@ from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
 import random
 
 class TicTacToe:
-    player_1_symbol = 'X'
-    player_2_symbol = 'O'
-    player_3_symbol = 'Y'
-    player_count = 2
-    player_turn = 1
-    player_tags = []
+    player_symbols = ['X', 'O', 'Y']
+    player_emoji = ['❌', '⭕️', '🔼']
+    player_count = 1
+    player_turn = 0
+    player_tags = ['', '', '']
+    player_tags_role = ['', '', '']
     level = 1
+    size = 0
     
     def __init__(self):
-        self.current_player = self.player_1_symbol # X selalu yang pertama bermain
         self.game_over = 'None'
     
     def set_dimension(self, size: int = 3):
+        self.size = size
         self.board = [[' ']*size for _ in range(size)]
     
-    def set_symbol_player_count(self, player_count: int = 2):
+    def set_symbol_player_count(self, player_count: int = 1):
+        if player_count in [1, 2]:
+            self.player_symbols = ['X', 'O']
+            self.player_emoji = ['❌', '⭕️']
+
         self.player_count = player_count
-        self.player_turn = 1
-    
-    def set_multiplayer(self, *player_tags):
-        self.player_tags = player_tags
+
+    def get_current_player(self):
+        return self.player_symbols[self.player_turn]
+
+    # TODO 
+    # def set_multiplayer(self, *player_tags):
+    #     self.player_tags = player_tags
 
     def make_random_move(self):
         (i, j) = (random.randint(0, self.size - 1), random.randint(0, self.size - 1))
-        self.make_move(i, j, self.current_player)
+        self.make_move(i, j, self.get_current_player())
     
     def set_level(self, level: int):
         self.level = level
@@ -42,13 +50,13 @@ class TicTacToe:
         ])
         return buttons
 
-    def get_text_giliran(self):
+    def get_text_giliran(self, user_id: int):
         """
         Text untuk menunjukkan giliran saat ini:
         ex. "Giliran X (Anda)"
         ex. "Giliran O (Bot)"
         """
-        return f'Giliran {self.get_symbol_emoji_current()} {"(Anda)" if self.choose_symbol == self.current_player else "(Bot)"}'
+        return f'Giliran {self.get_symbol_emoji_current(user_id)} @{self.player_tags_role[self.player_turn]}'
     
     def get_text_game_over(self):
         """
@@ -57,8 +65,10 @@ class TicTacToe:
         ex. "Game Draw!"
         ex. "Bot menang!"
         """
+        self.switch_player()
+        if self.player_count == 3: self.switch_player()
         if self.game_over == 'Win':
-            return "Anda menang!" if self.current_player == self.choose_symbol else "Bot menang!"
+            return f"@{self.player_tags_role[self.player_turn]} menang!"
         elif self.game_over == 'Draw':
             return "Game Draw!"
     
@@ -85,7 +95,7 @@ class TicTacToe:
         if all(self.board[i][i] == player for i in range(self.size)):
             return True
 		# Diagonal dari kanan atas ke kiri bawah
-        return all(self.board[i][2-i] == player for i in range(3))
+        return all(self.board[i][self.size - 1 - i] == player for i in range(3))
     
     def get_winner(self):
         """
@@ -111,19 +121,22 @@ class TicTacToe:
         """
         return (self.get_winner() is not None) and self.is_full()
 
-    def make_move(self, row, col, player) -> bool:
+    def make_move(self, row, col) -> bool:
         """
         Membuat pergerakan untun {player} pada cell (row, col).
         Mengembalikan True jika pergerakan valid, False jika tidak
         """
 
+        symbol = self.player_symbols[self.player_turn]
+        self.switch_player()
+
         # Cek apakah posisi yang dipilih kosong
         if self.board[row][col] == ' ':
             # Jika kosong isi dengan simbol player
             # Jika kosong isi dengan simbol player
-            self.board[row][col] = player
+            self.board[row][col] = symbol
             # Cek apakah player menang
-            win = self.is_winner(self.current_player)
+            win = self.is_winner(symbol)
             if win:
                 # Jika menang, game over
                 self.game_over = 'Win'
@@ -142,45 +155,38 @@ class TicTacToe:
         # Return False jika pergerakan tidak valid
         return False
     
-    def get_symbol_emoji_current(self):
+    def get_symbol_emoji_current(self, user_id: int):
         """
         Mendapatkan emoji simbol player saat ini
         """
-        if self.current_player == self.player1:
-            return '❌'
-        else:
-            return '⭕️'
-    
+        index = self.player_tags_role.index(user_id)
+        return self.player_emoji[index]
+        
     def get_symbol_emoji_at(self, row, col):
         """
         Mendapatkan emoji simbol pada cell (row, col).
         "." jika cell (row, col) kosong
         """
-        if self.board[row][col] == self.player1:
+        if self.board[row][col] == 'X':
             return '❌'
-        elif self.board[row][col] == self.player2:
+        elif self.board[row][col] == 'O':
             return '⭕️'
+        elif self.board[row][col] == 'Y':
+            return '🔼'
         else:
             return '.'
+
     
     def make_move_current(self, row, col):
         """
         Membuat pergerakan player saat ini pada cell (row, col)
         """
-        return self.make_move(row, col, self.current_player)
+        return self.make_move(row, col)
 
     def switch_player(self):
-        """
-        Mengganti current_player ke player lain
-        """
-        self.current_player = self.player2 if self.current_player == self.player1 else self.player1
-    
-    def get_opponent(self):
-        """
-        Mendapatkan player lawan dari current_player
-        """
-        return self.player2 if self.current_player == self.player1 else self.player1
-        
+        self.player_turn += 1
+        if self.player_turn == self.player_count:
+            self.player_turn = 0
         
     # Level Imposible
     def minimax(self, depth, alpha, beta, is_maximizing):

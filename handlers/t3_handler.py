@@ -1,8 +1,11 @@
 from bot import TeleBot
-from tic_tac_toe import TicTacToe
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
+from handlers.tic_tac_toe_handlers.choose_symbol import *
+from handlers.tic_tac_toe_handlers.choose_dimension import *
+from handlers.tic_tac_toe_handlers.choose_mode import *
+from handlers.tic_tac_toe_handlers.move_handler import *
 
-def replay(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int):
+def replay(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int, user_id: int):
 	"""
 	Handler untuk tombol 'Mulai Lagi'
 	"""
@@ -15,7 +18,7 @@ def replay(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int):
 	teleBot.bot.editMessageText(msg_id, 'Pilih simbolmu:')
 	teleBot.bot.editMessageReplyMarkup(msg_id, reply_markup=buttons)
 
-def end_game(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int):
+def end_game(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int, user_id: int):
 	"""
 	Handler untuk tombol 'Selesai'
 	"""
@@ -31,9 +34,21 @@ def get_text_game_over(self):
 	else:
 		winner = self.get_winner()
 		return f'Pemenangnya adalah {winner}!'
+	
+def tic_tac_toe_handler(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int, user_id: int):
+	"""
+	Handler untuk tombol memulai game Tic Tac Toe
+	"""
+	teleBot.bot.answerCallbackQuery(query_id, text='Memulai game Tic Tac Toe')
+	game = TicTacToe()
+	game.player_tags.append(user_id)
+	teleBot.add_t3_game(message_id, game)
+	choose_mode(teleBot, query_id, chat_id, message_id, user_id)
+
 # Pemanggilan fungsi di folder t3 handler
 def add_tic_tac_toe_handlers(teleBot: TeleBot):
 	# Menambahkan semua handler ke teleBot
+	teleBot.add_handler('tic_tac_toe', tic_tac_toe_handler)
 	# Menambahkan handler untuk memilih simbol X (pada mulai permainan)
 	teleBot.add_handler('symbol_x', get_symbol_handler('X'))
 	# Menambahkan handler untuk memilih simbol O (pada mulai permainan)
@@ -43,14 +58,14 @@ def add_tic_tac_toe_handlers(teleBot: TeleBot):
 	teleBot.add_handler('4_by_4', get_size_handler(4))
 	teleBot.add_handler('5_by_5', get_size_handler(5))
 	# Menambahkan handler untuk pilihan multiplayer
-	teleBot.add_handler('single', get_choose_mode_handler('Single Player'))
-	teleBot.add_handler('duo', get_choose_mode_handler('Duo Player'))
-	teleBot.add_handler('triple', get_choose_mode_handler('Multi Player'))
+	teleBot.add_handler('single', get_choose_mode_handler(1))
+	teleBot.add_handler('duo', get_choose_mode_handler(2))
+	teleBot.add_handler('triple', get_choose_mode_handler(3))
 	# Menambahkan handler untuk pilihan posisi (dalam permainan)
-	for row in range(3):
-		for col in range(3):
+	for row in range(5):
+		for col in range(5):
 			teleBot.add_handler(
-				f'pos_{row}_{col}', get_pos_handler(row, col))
+				f'pos_{row}_{col}', get_move_handler(row, col))
 	# Menambahkan handler untuk tombol 'Mulai Lagi'
 	teleBot.add_handler('replay', replay)
 	# Menambahkan handler untuk tombol 'Selesai'

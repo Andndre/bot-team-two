@@ -3,7 +3,7 @@ from tic_tac_toe import TicTacToe
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
 from choose_mode import choose_mode
 
-def level_buttons(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int):
+def level_buttons(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int, user_id: int):
 	teleBot.add_t3_game(message_id, TicTacToe())
 
 	teleBot.bot.answerCallbackQuery(query_id, text='Memulai game Tic Tac Toe')
@@ -22,7 +22,7 @@ def get_level_handler(level: str):
 	"""
 	Mengenerate handler untuk tombol simbol (pilihan X atau O sebelum permainan)
 	"""
-	def handler(teleBot: TeleBot, query_id, chat_id, message_id):
+	def handler(teleBot: TeleBot, query_id, chat_id, message_id, user_id):
 		# Jawab callback query dengan menampilkan informasi simbol yang dipilih
 		teleBot.bot.answerCallbackQuery(query_id, text=f'Anda memilih menjadi {level}, selamat bermain!')
 		# Buat game TicTacToe baru dengan simbol yang dipilih
@@ -37,5 +37,5 @@ def get_level_handler(level: str):
 		elif level == 'Impossible':
 			game.set_level(3)
 		
-		choose_mode(teleBot, query_id, chat_id, message_id)
+		choose_mode(teleBot, query_id, chat_id, message_id, user_id)
 	return handler

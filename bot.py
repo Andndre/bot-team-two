@@ -34,6 +34,7 @@ class TeleBot:
                 [InlineKeyboardButton(text='Main Tic Tac Toe', callback_data='tic_tac_toe')]
             ])
             self.bot.sendMessage(chat_id, 'Halo selamat datang di Bot, silahkan pilih opsi dibawah:', reply_markup=keyboard)
+        print(msg['text'])
     
     def add_t3_game(self, message_id: int, game: TicTacToe) -> None:
         """
@@ -69,6 +70,7 @@ class TeleBot:
         query_id, _, query_data = telepot.glance(msg, flavor='callback_query')
         chat_id = msg['message']['chat']['id']
         message_id = msg['message']['message_id']
+        user_id = msg['message']['from']['id']
 
-        self.handlers[query_data](self, query_id, chat_id, message_id)
+        self.handlers[query_data](self, query_id, chat_id, message_id, user_id)
 
