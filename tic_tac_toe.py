@@ -2,23 +2,34 @@ from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
 import random
 
 class TicTacToe:
-    def __init__(self, choose_symbol: str):
-        self.board = [[' ']*3 for _ in range(3)]
-        self.player1 = 'X'
-        self.player2 = 'O'
-        self.current_player = self.player1 # X selalu yang pertama bermain
-        self.game_over = 'None'
-        self.choose_symbol = choose_symbol
-        self.bot_symbol = 'X' if choose_symbol == 'O' else 'O'
-        if choose_symbol == 'O':
-            # Bot berjalan pertama
-            # self.make_ai_move() -> Akan menghasilkan pergerakan di (0, 0)
-            # Untuk mempersingkat waktu:
-            self.make_random_move()
+    player_1_symbol = 'X'
+    player_2_symbol = 'O'
+    player_3_symbol = 'Y'
+    player_count = 2
+    player_turn = 1
+    player_tags = []
+    level = 1
     
+    def __init__(self):
+        self.current_player = self.player_1_symbol # X selalu yang pertama bermain
+        self.game_over = 'None'
+    
+    def set_dimension(self, size: int = 3):
+        self.board = [[' ']*size for _ in range(size)]
+    
+    def set_symbol_player_count(self, player_count: int = 2):
+        self.player_count = player_count
+        self.player_turn = 1
+    
+    def set_multiplayer(self, *player_tags):
+        self.player_tags = player_tags
+
     def make_random_move(self):
-        (i, j) = (random.randint(0, 2), random.randint(0, 2))
+        (i, j) = (random.randint(0, self.size - 1), random.randint(0, self.size - 1))
         self.make_move(i, j, self.current_player)
+    
+    def set_level(self, level: int):
+        self.level = level
 
     def generate_markup(self):
         """
@@ -26,8 +37,8 @@ class TicTacToe:
         """
         buttons = InlineKeyboardMarkup(inline_keyboard=[
             [
-                InlineKeyboardButton(text=f'{self.get_symbol_emoji_at(i, j)}', callback_data=f'pos_{i}_{j}') for j in range(3)
-            ] for i in range(3)
+                InlineKeyboardButton(text=f'{self.get_symbol_emoji_at(i, j)}', callback_data=f'pos_{i}_{j}') for j in range(self.size)
+            ] for i in range(self.size)
         ])
         return buttons
 
@@ -63,15 +74,15 @@ class TicTacToe:
         """
         Mengecek apakah {player} menang
         """
-        for i in range(3):
+        for i in range(self.size):
             # Horizontal    
-            if all(self.board[i][j] == player for j in range(3)):
+            if all(self.board[i][j] == player for j in range(self.size)):
                 return True
 			# Vertikal
-            if all(self.board[j][i] == player for j in range(3)):
+            if all(self.board[j][i] == player for j in range(self.size)):
                 return True
 		# Diagonal dari kiri atas ke kanan bawah
-        if all(self.board[i][i] == player for i in range(3)):
+        if all(self.board[i][i] == player for i in range(self.size)):
             return True
 		# Diagonal dari kanan atas ke kiri bawah
         return all(self.board[i][2-i] == player for i in range(3))
@@ -169,7 +180,9 @@ class TicTacToe:
         Mendapatkan player lawan dari current_player
         """
         return self.player2 if self.current_player == self.player1 else self.player1
-
+        
+        
+    # Level Imposible
     def minimax(self, depth, alpha, beta, is_maximizing):
         """
         Algoritma minimax untuk mencari pergerakan yang paling optimal
