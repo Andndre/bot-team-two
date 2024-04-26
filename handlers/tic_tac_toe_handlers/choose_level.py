@@ -1,7 +1,7 @@
 from bot import TeleBot
 from tic_tac_toe import TicTacToe
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
-from choose_mode import choose_mode
+from handlers.tic_tac_toe_handlers.choose_symbol import *
 
 def level_buttons(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int, user_id: int):
 	teleBot.add_t3_game(message_id, TicTacToe())
@@ -37,5 +37,5 @@ def get_level_handler(level: str):
 		elif level == 'Impossible':
 			game.set_level(3)
 		
-		choose_mode(teleBot, query_id, chat_id, message_id, user_id)
+		get_symbol_buttons(game.player_count)(teleBot, query_id, chat_id, message_id, user_id)
 	return handler

@@ -18,6 +18,9 @@ class TicTacToe:
         self.size = size
         self.board = [[' ']*size for _ in range(size)]
     
+    def get_symbol_index(self, symbol: str):
+        return self.player_symbols.index(symbol)
+    
     def set_symbol_player_count(self, player_count: int = 1):
         if player_count in [1, 2]:
             self.player_symbols = ['X', 'O']
@@ -120,6 +123,11 @@ class TicTacToe:
         Mengecek apakah game draw/seri
         """
         return (self.get_winner() is not None) and self.is_full()
+
+    def assign_symbol_user_id(self, user_id: int, symbol: str):
+        index = self.get_symbol_index(symbol)
+        self.player_tags.append(user_id)
+        self.player_tags_role[index] = user_id
 
     def make_move(self, row, col) -> bool:
         """
