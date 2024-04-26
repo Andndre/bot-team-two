@@ -29,6 +29,9 @@ def get_choose_mode_handler(jumlah_player: int):
 			teleBot.bot.editMessageReplyMarkup(msg_id, reply_markup=None)
 		if jumlah_player == 3:
 			game.set_symbol_player_count(3)
-			# TODO: tampilan untuk multi player		
+			teleBot.bot.editMessageText(msg_id, 'Menunggu pemain ketiga untuk bergabung...', 
+                                        reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Bergabung', callback_data='join')]]))
+            # Menghapus tombol mode setelah memulai permainan
+			teleBot.bot.editMessageReplyMarkup(msg_id, reply_markup=None)	
 		
 	return handler
