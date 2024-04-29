@@ -1,19 +1,34 @@
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
 import random
+import pickle
+import os
 
 class TicTacToe:
-    player_symbols = ['X', 'O', 'Y']
-    player_emoji = ['❌', '⭕️', '🔼']
-    player_count = 1
-    player_turn = 0
-    player_tags = ['', '', '']
-    player_tags_role = ['', '', '']
-    level = 1
-    size = 0
-    board: list[list[str]] = []
     
-    def __init__(self):
+    def __init__(self, message_id: int):
         self.game_over = 'None'
+        self.size = 0
+        self.level = 1
+        self.player_count = 1
+        self.player_turn = 0
+        self.player_emoji = ['❌', '⭕️', '🔼']
+        self.player_symbols = ['X', 'O', 'Y']
+        self.board: list[list[str]] = []
+        self.player_tags = ['', '', '']
+        self.player_tags_role = ['', '', '']
+        self.message_id = message_id
+
+    def save(self):
+        # create folder
+        if not os.path.exists('saved_games'):
+            os.makedirs('saved_games')
+        with open(f'saved_games/{self.message_id}.pickle', 'wb') as f:
+            pickle.dump(self, f)
+    
+    @staticmethod
+    def load(message_id: int):
+        with open(f'saved_games/{message_id}.pickle', 'rb') as f:
+            return pickle.load(f)
     
     def set_dimension(self, size: int = 3):
         self.size = size
@@ -32,6 +47,9 @@ class TicTacToe:
     def get_current_player(self):
         return self.player_symbols[self.player_turn]
 
+    def get_current_username(self):
+        self.player_tags_role[self.player_turn]
+
     # TODO 
     # def set_multiplayer(self, *player_tags):
     #     self.player_tags = player_tags
@@ -47,13 +65,11 @@ class TicTacToe:
         """
         Menghasilkan tombol 3x3, 4x4, atau 5x5 berisi simbol X dan O (atau dan Y) sesuai state game saat ini
         """
-        print(self.size)
         buttons = InlineKeyboardMarkup(inline_keyboard=[
             [
                 InlineKeyboardButton(text=f'{self.get_symbol_emoji_at(i, j)}', callback_data=f'pos_{i}_{j}') for j in range(self.size)
             ] for i in range(self.size)
         ])
-        print(buttons)
         return buttons
 
     def get_text_giliran(self, username: str):

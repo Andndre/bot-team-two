@@ -4,8 +4,6 @@ from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
 
 def get_symbol_buttons(jumlah_player: int):
 	def symbol_buttons(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int, username: int):
-		teleBot.add_t3_game(message_id, TicTacToe())
-
 		teleBot.bot.answerCallbackQuery(query_id, text='Memulai game Tic Tac Toe')
 		msg_id = (chat_id, message_id)
 
@@ -34,11 +32,12 @@ def get_symbol_handler(symbol: str):
 		# Jawab callback query dengan menampilkan informasi simbol yang dipilih
 		teleBot.bot.answerCallbackQuery(query_id, text=f'Anda memilih menjadi {symbol}, selamat bermain!')
 		# Buat game TicTacToe baru dengan simbol yang dipilih
-		game = teleBot.get_t3_game(message_id)
+		game: TicTacToe = TicTacToe.load(message_id)
 		msg_id = (chat_id, message_id)
 		
 		if game.player_count == 1:
 			game.assign_symbol_username(username, symbol)
+			game.save()
 			# Simpan game untuk digunakan di pesan yang sama
 			# Edit pesan untuk menampilkan pesan giliran
 			teleBot.bot.editMessageText(msg_id, game.get_text_giliran(username))

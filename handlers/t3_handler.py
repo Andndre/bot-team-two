@@ -40,9 +40,9 @@ def tic_tac_toe_handler(teleBot: TeleBot, query_id: int, chat_id: int, message_i
 	Handler untuk tombol memulai game Tic Tac Toe
 	"""
 	teleBot.bot.answerCallbackQuery(query_id, text='Memulai game Tic Tac Toe')
-	game = TicTacToe()
+	game = TicTacToe(message_id)
 	game.player_tags.append(user_id)
-	teleBot.add_t3_game(message_id, game)
+	game.save()
 	choose_mode(teleBot, query_id, chat_id, message_id, user_id)
 
 # Pemanggilan fungsi di folder t3 handler

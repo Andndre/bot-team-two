@@ -27,9 +27,9 @@ def get_size_handler(size: int):
 	"""
 	def handler(teleBot: TeleBot, query_id, chat_id, message_id, username):
 		# Buat game TicTacToe baru dengan ukuran board yang dipilih
-		game = teleBot.get_t3_game(message_id)
+		game: TicTacToe = TicTacToe.load(message_id)
 		game.set_dimension(size)
-		print(f"size: {size}")
+		game.save()
 
 		# Jika game belum selesai, edit message dengan pesan giliran
 		level_buttons(teleBot, query_id, chat_id, message_id, username)
