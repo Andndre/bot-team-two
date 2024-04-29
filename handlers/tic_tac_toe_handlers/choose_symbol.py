@@ -3,7 +3,7 @@ from tic_tac_toe import TicTacToe
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
 
 def get_symbol_buttons(jumlah_player: int):
-	def symbol_buttons(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int, user_id: int):
+	def symbol_buttons(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int, username: int):
 		teleBot.add_t3_game(message_id, TicTacToe())
 
 		teleBot.bot.answerCallbackQuery(query_id, text='Memulai game Tic Tac Toe')
@@ -30,19 +30,18 @@ def get_symbol_handler(symbol: str):
 	"""
 	Mengenerate handler untuk tombol simbol (pilihan X atau O sebelum permainan)
 	"""
-	def handler(teleBot: TeleBot, query_id, chat_id, message_id, user_id):
+	def handler(teleBot: TeleBot, query_id, chat_id, message_id, username):
 		# Jawab callback query dengan menampilkan informasi simbol yang dipilih
 		teleBot.bot.answerCallbackQuery(query_id, text=f'Anda memilih menjadi {symbol}, selamat bermain!')
 		# Buat game TicTacToe baru dengan simbol yang dipilih
 		game = teleBot.get_t3_game(message_id)
+		msg_id = (chat_id, message_id)
 		
 		if game.player_count == 1:
-			game.assign_symbol_user_id(user_id, symbol)
+			game.assign_symbol_username(username, symbol)
 			# Simpan game untuk digunakan di pesan yang sama
-			msg_id = (chat_id, message_id)
-			teleBot.add_t3_game(message_id, game)
 			# Edit pesan untuk menampilkan pesan giliran
-			teleBot.bot.editMessageText(msg_id, game.get_text_giliran(user_id))
+			teleBot.bot.editMessageText(msg_id, game.get_text_giliran(username))
 			# Edit reply markup untuk menampilkan board awal
 			teleBot.bot.editMessageReplyMarkup(msg_id, reply_markup=game.generate_markup())
 		else:

@@ -2,7 +2,7 @@ from bot import TeleBot
 from handlers.tic_tac_toe_handlers.choose_mode import *
 from handlers.tic_tac_toe_handlers.choose_dimension import *
 
-def choose_player(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int, user_id: int): 
+def choose_player(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int, username: str): 
     # Tag Playernya
     msg_id = (chat_id, message_id)
     
@@ -14,7 +14,7 @@ def choose_player(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int
         content_type, chat_type, chat_id = teleBot.glance(msg)
         if content_type == 'text':
             # Check if the message is from the host
-            if msg['from']['id'] == user_id:
+            if msg['from']['username'] == username:
                 # Check if the message contains a username to tag
                 if '@' in msg['text']:
                     # Extract the username from the message
@@ -22,7 +22,7 @@ def choose_player(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int
                     # Check if the tagged username is valid and present in the group
                     if tagged_username in [member['username'] for member in teleBot.bot.getChatMembers(chat_id)]:
                         # Proceed to choose dimensions
-                        size_buttons(teleBot, query_id, chat_id, message_id, user_id, tagged_username)
+                        size_buttons(teleBot, query_id, chat_id, message_id, username, tagged_username)
                     else:
                         # Send message informing that the username is not valid
                         teleBot.bot.sendMessage(chat_id, 'Username tidak ada pada grup ini, silahkan coba lagi')

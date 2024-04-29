@@ -70,7 +70,8 @@ class TeleBot:
         query_id, _, query_data = telepot.glance(msg, flavor='callback_query')
         chat_id = msg['message']['chat']['id']
         message_id = msg['message']['message_id']
-        user_id = msg['message']['from']['id']
+        username = msg['from']['username']
+        # print(msg)
 
-        self.handlers[query_data](self, query_id, chat_id, message_id, user_id)
+        self.handlers[query_data](self, query_id, chat_id, message_id, username)
 

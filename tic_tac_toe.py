@@ -10,6 +10,7 @@ class TicTacToe:
     player_tags_role = ['', '', '']
     level = 1
     size = 0
+    board: list[list[str]] = []
     
     def __init__(self):
         self.game_over = 'None'
@@ -44,22 +45,24 @@ class TicTacToe:
 
     def generate_markup(self):
         """
-        Menghasilkan tombol 3x3 berisi simbol X dan O sesuai state game saat ini
+        Menghasilkan tombol 3x3, 4x4, atau 5x5 berisi simbol X dan O (atau dan Y) sesuai state game saat ini
         """
+        print(self.size)
         buttons = InlineKeyboardMarkup(inline_keyboard=[
             [
                 InlineKeyboardButton(text=f'{self.get_symbol_emoji_at(i, j)}', callback_data=f'pos_{i}_{j}') for j in range(self.size)
             ] for i in range(self.size)
         ])
+        print(buttons)
         return buttons
 
-    def get_text_giliran(self, user_id: int):
+    def get_text_giliran(self, username: str):
         """
         Text untuk menunjukkan giliran saat ini:
         ex. "Giliran X (Anda)"
         ex. "Giliran O (Bot)"
         """
-        return f'Giliran {self.get_symbol_emoji_current(user_id)} @{self.player_tags_role[self.player_turn]}'
+        return f'Giliran {self.get_symbol_emoji_current(username)} @{self.player_tags_role[self.player_turn]}'
     
     def get_text_game_over(self):
         """
@@ -124,10 +127,10 @@ class TicTacToe:
         """
         return (self.get_winner() is not None) and self.is_full()
 
-    def assign_symbol_user_id(self, user_id: int, symbol: str):
+    def assign_symbol_username(self, username: str, symbol: str):
         index = self.get_symbol_index(symbol)
-        self.player_tags.append(user_id)
-        self.player_tags_role[index] = user_id
+        self.player_tags.append(username)
+        self.player_tags_role[index] = username
 
     def make_move(self, row, col) -> bool:
         """
@@ -163,11 +166,11 @@ class TicTacToe:
         # Return False jika pergerakan tidak valid
         return False
     
-    def get_symbol_emoji_current(self, user_id: int):
+    def get_symbol_emoji_current(self, username: str):
         """
         Mendapatkan emoji simbol player saat ini
         """
-        index = self.player_tags_role.index(user_id)
+        index = self.player_tags_role.index(username)
         return self.player_emoji[index]
         
     def get_symbol_emoji_at(self, row, col):

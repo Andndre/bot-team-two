@@ -6,7 +6,7 @@ def get_move_handler(row, col):
 	"""
 	Mengenerate handler untuk tombol posisi (row, col)
 	"""
-	def handler(teleBot: TeleBot, query_id, chat_id, message_id, user_id):
+	def handler(teleBot: TeleBot, query_id, chat_id, message_id, username):
 		"""
 		Jawab callback query dari tombol posisi dan proses pergerakan
 		"""
