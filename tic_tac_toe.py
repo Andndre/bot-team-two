@@ -48,7 +48,7 @@ class TicTacToe:
         return self.player_symbols[self.player_turn]
 
     def get_current_username(self):
-        self.player_tags_role[self.player_turn]
+        return self.player_tags_role[self.player_turn]
 
     # TODO 
     # def set_multiplayer(self, *player_tags):
@@ -72,13 +72,14 @@ class TicTacToe:
         ])
         return buttons
 
-    def get_text_giliran(self, username: str):
+    def get_text_giliran(self):
         """
         Text untuk menunjukkan giliran saat ini:
         ex. "Giliran X (Anda)"
         ex. "Giliran O (Bot)"
         """
-        return f'Giliran {self.get_symbol_emoji_current(username)} @{self.player_tags_role[self.player_turn]}'
+        username = self.get_current_username()
+        return f'Giliran {self.get_symbol_emoji_current()} @{username if username != '' else "Bot"}'
     
     def get_text_game_over(self):
         """
@@ -90,7 +91,7 @@ class TicTacToe:
         self.switch_player()
         if self.player_count == 3: self.switch_player()
         if self.game_over == 'Win':
-            return f"@{self.player_tags_role[self.player_turn]} menang!"
+            return f"@{self.get_current_username()} menang!"
         elif self.game_over == 'Draw':
             return "Game Draw!"
     
@@ -100,7 +101,7 @@ class TicTacToe:
         dan membuat pergerakan
         """
         (i, j) = self.find_best_move()
-        self.make_move(i, j, self.current_player)
+        self.make_move(i, j)
 
     def is_winner(self, player) -> bool:
         """
@@ -154,7 +155,7 @@ class TicTacToe:
         Mengembalikan True jika pergerakan valid, False jika tidak
         """
 
-        symbol = self.player_symbols[self.player_turn]
+        symbol = self.get_current_player()
         self.switch_player()
 
         # Cek apakah posisi yang dipilih kosong
@@ -182,12 +183,11 @@ class TicTacToe:
         # Return False jika pergerakan tidak valid
         return False
     
-    def get_symbol_emoji_current(self, username: str):
+    def get_symbol_emoji_current(self):
         """
         Mendapatkan emoji simbol player saat ini
         """
-        index = self.player_tags_role.index(username)
-        return self.player_emoji[index]
+        return self.player_emoji[self.player_turn]
         
     def get_symbol_emoji_at(self, row, col):
         """
@@ -211,6 +211,8 @@ class TicTacToe:
         return self.make_move(row, col)
 
     def switch_player(self):
+        if self.player_count == 1: # If playing with bot
+            self.player_turn = 0 if self.player_turn == 1 else 1
         self.player_turn += 1
         if self.player_turn == self.player_count:
             self.player_turn = 0
@@ -227,6 +229,9 @@ class TicTacToe:
             tinggi untuk player bot, dan score yang lebih rendah untuk player
             pemain.
         """
+
+        print('Minimax cuy')
+
 
         # Cek apakah ada pemenang
         winner = self.get_winner()

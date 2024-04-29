@@ -40,7 +40,7 @@ def get_symbol_handler(symbol: str):
 			game.save()
 			# Simpan game untuk digunakan di pesan yang sama
 			# Edit pesan untuk menampilkan pesan giliran
-			teleBot.bot.editMessageText(msg_id, game.get_text_giliran(username))
+			teleBot.bot.editMessageText(msg_id, game.get_text_giliran())
 			# Edit reply markup untuk menampilkan board awal
 			teleBot.bot.editMessageReplyMarkup(msg_id, reply_markup=game.generate_markup())
 		else:
