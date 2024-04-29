@@ -29,11 +29,13 @@ def get_move_handler(row, col):
 		moved = game.make_move_current(row, col)
 		if moved: # Jika pergerakan valid, lanjutkan dengan pergerakan bot
 			print('moved')
-			if game.game_over == None and game.get_current_username() == '': # Jika pergerakan valid, lanjutkan dengan pergerakan bot
+			print(game.get_current_username())
+			if game.game_over == 'None' and game.get_current_username() == '': # Jika pergerakan valid, lanjutkan dengan pergerakan bot
+				print('bot bergerak')
 				teleBot.bot.answerCallbackQuery(query_id, text='Bot berfikir...')
 				game.make_ai_move()
 			game.save()
-			if (game.game_over != None): # Cek apakah game sudah selesai
+			if (game.game_over != 'None'): # Cek apakah game sudah selesai
 				# Edit message dengan pesan game over dan hapus reply markup
 				teleBot.bot.editMessageText(msg_id, game.get_text_game_over())
 				teleBot.bot.editMessageReplyMarkup(msg_id, reply_markup=game.generate_markup())

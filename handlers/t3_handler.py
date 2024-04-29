@@ -54,7 +54,7 @@ def add_tic_tac_toe_handlers(teleBot: TeleBot):
 	# Menambahkan handler untuk memilih simbol O (pada mulai permainan)
 	teleBot.add_handler('symbol_o', get_symbol_handler('O'))
 	# Menambahkan handler untuk memilih simbol Y (pada mulai permainan)
-	teleBot.add_handler('symbol_o', get_symbol_handler('Y'))
+	teleBot.add_handler('symbol_y', get_symbol_handler('Y'))
 	# Menambahkan handler untuk tombol ukuran (ukuran board)
 	teleBot.add_handler('3_by_3', get_size_handler(3))
 	teleBot.add_handler('4_by_4', get_size_handler(4))

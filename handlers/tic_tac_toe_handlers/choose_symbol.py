@@ -16,7 +16,7 @@ def get_symbol_buttons(jumlah_player: int):
 			buttons = InlineKeyboardMarkup(inline_keyboard=[
 				[InlineKeyboardButton(text='❌', callback_data='symbol_x'),
 				InlineKeyboardButton(text='⭕️', callback_data='symbol_o')],
-				[InlineKeyboardButton(text='🔼', callback_data='symbol_segitiga')],
+				[InlineKeyboardButton(text='🔼', callback_data='symbol_y')],
 				InlineKeyboardButton(text='Lanjutkan', callback_data='lanjut_symbol')
 			])
 
@@ -37,8 +37,9 @@ def get_symbol_handler(symbol: str):
 		
 		if game.player_count == 1:
 			game.assign_symbol_username(username, symbol)
+			if game.get_current_username() == '':
+				game.make_ai_move()
 			game.save()
-			# Simpan game untuk digunakan di pesan yang sama
 			# Edit pesan untuk menampilkan pesan giliran
 			teleBot.bot.editMessageText(msg_id, game.get_text_giliran())
 			# Edit reply markup untuk menampilkan board awal

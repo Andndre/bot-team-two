@@ -50,10 +50,6 @@ class TicTacToe:
     def get_current_username(self):
         return self.player_tags_role[self.player_turn]
 
-    # TODO 
-    # def set_multiplayer(self, *player_tags):
-    #     self.player_tags = player_tags
-
     def make_random_move(self):
         (i, j) = (random.randint(0, self.size - 1), random.randint(0, self.size - 1))
         self.make_move(i, j, self.get_current_player())
@@ -88,8 +84,6 @@ class TicTacToe:
         ex. "Game Draw!"
         ex. "Bot menang!"
         """
-        self.switch_player()
-        if self.player_count == 3: self.switch_player()
         if self.game_over == 'Win':
             return f"@{self.get_current_username()} menang!"
         elif self.game_over == 'Draw':
@@ -100,8 +94,11 @@ class TicTacToe:
         Mencari pergerakan bot dengan minimax alpha beta pruning
         dan membuat pergerakan
         """
-        (i, j) = self.find_best_move()
-        self.make_move(i, j)
+        if self.level == 1:
+            self.make_random_move()
+        else:
+            (i, j) = self.find_best_move(self.get_current_player())
+            self.make_move(i, j)
 
     def is_winner(self, player) -> bool:
         """
@@ -118,25 +115,23 @@ class TicTacToe:
         if all(self.board[i][i] == player for i in range(self.size)):
             return True
 		# Diagonal dari kanan atas ke kiri bawah
-        return all(self.board[i][self.size - 1 - i] == player for i in range(3))
+        return all(self.board[i][self.size - 1 - i] == player for i in range(self.size))
     
     def get_winner(self):
         """
         Mengembalikan player yang menang.
         None jika tidak/belum ada player yang menang
         """
-        if self.is_winner(self.player1):
-            return self.player1
-        elif self.is_winner(self.player2):
-            return self.player2
-        else:
-            return None
-    
+        for i in range(len(self.player_symbols)):
+            if self.is_winner(self.player_symbols[i]):
+                return self.player_symbols[i]
+        return None
+        
     def is_full(self):
         """
         Mengecek apakah semua cell tidak kosong
         """
-        return all(self.board[i][j] != ' ' for i in range(3) for j in range(3))
+        return all(self.board[i][j] != ' ' for i in range(self.size) for j in range(self.size))
     
     def is_draw(self):
         """
@@ -156,7 +151,6 @@ class TicTacToe:
         """
 
         symbol = self.get_current_player()
-        self.switch_player()
 
         # Cek apakah posisi yang dipilih kosong
         if self.board[row][col] == ' ':
@@ -213,12 +207,13 @@ class TicTacToe:
     def switch_player(self):
         if self.player_count == 1: # If playing with bot
             self.player_turn = 0 if self.player_turn == 1 else 1
+            return
         self.player_turn += 1
         if self.player_turn == self.player_count:
             self.player_turn = 0
         
     # Level Imposible
-    def minimax(self, depth, alpha, beta, is_maximizing):
+    def minimax(self, depth, alpha, beta, is_maximizing, bot_symbol):
         """
         Algoritma minimax untuk mencari pergerakan yang paling optimal
         pada game Tic-Tac-Toe. Algoritma ini menggunakan
@@ -230,17 +225,14 @@ class TicTacToe:
             pemain.
         """
 
-        print('Minimax cuy')
-
-
         # Cek apakah ada pemenang
         winner = self.get_winner()
-        if winner:
+        if winner or (self.level == 2 and depth >= 10):
             # Jika pemenang adalah player bot, maka nilai scorenya diubah menjadi
             # 10 - depth, yang artinya lebih tinggi daripada score lainnya.
             # Jika pemenang adalah player pemain, maka nilai scorenya diubah menjadi
             # depth - 10, yang artinya lebih rendah daripada score lainnya.
-            if winner == self.bot_symbol:
+            if winner == bot_symbol:
                 return 10 - depth
             else:
                 return depth - 10
@@ -263,9 +255,9 @@ class TicTacToe:
                     # Jika cell (i, j) masih kosong
                     if self.board[i][j] == ' ':
                         # Membuat pergerakan pada cell tersebut
-                        self.board[i][j] = self.bot_symbol
-                        # Mencari score pada fase pencarian berikutnya
-                        score = self.minimax(depth + 1, alpha, beta, False)
+                        self.board[i][j] = bot_symbol
+                        # Mencari score pada fase pencarian berikutnyas
+                        score = self.minimax(depth + 1, alpha, beta, False, bot_symbol)
                         # Mengembalikan pergerakan pada cell tersebut
                         self.board[i][j] = ' '
                         # Mengupdate score terbaik dari fase pencarian ini
@@ -293,28 +285,30 @@ class TicTacToe:
             for j in range(3):
                 # Jika cell (i, j) masih kosong
                 if self.board[i][j] == ' ':
-                    # Membuat pergerakan pada cell tersebut
-                    self.board[i][j] = self.choose_symbol
-                    # Mencari score pada fase pencarian berikutnya
-                    score = self.minimax(depth + 1, alpha, beta, True)
-                    # Mengembalikan pergerakan pada cell tersebut
-                    self.board[i][j] = ' '
-                    # Mengupdate score terrendah
-                    best_score = min(score, best_score)
-                    # Mengupdate nilai beta
-                    beta = min(beta, score)
-                    # Cek apakah beta sudah lebih kecil dari alpha,
-                    # jika ya maka break dari loop pergerakan player pemain
-                    if beta <= alpha:
-                        breaking = True
-                        break
+                    for k in range(len(self.player_symbols)):
+                        if self.player_symbols[k] != bot_symbol:
+                            # Membuat pergerakan pada cell tersebut
+                            self.board[i][j] = self.player_symbols[k]
+                            # Mencari score pada fase pencarian berikutnya
+                            score = self.minimax(depth + 1, alpha, beta, True, bot_symbol)
+                            # Mengembalikan pergerakan pada cell tersebut
+                            self.board[i][j] = ' '
+                            # Mengupdate score terrendah
+                            best_score = min(score, best_score)
+                            # Mengupdate nilai beta
+                            beta = min(beta, score)
+                            # Cek apakah beta sudah lebih kecil dari alpha,
+                            # jika ya maka break dari loop pergerakan player pemain
+                            if beta <= alpha:
+                                breaking = True
+                                break
             # Break dari loop jika breaking == True
             if breaking:
                 break
         # Mengembalikan score terrendah
         return best_score
 
-    def find_best_move(self):
+    def find_best_move(self, bot_symbol: str):
         """
         Mengecek semua kemungkinan pergerakan player bot dengan Minimax,
         dan mengembalikan pergerakan yang paling optimal (dengan score paling tinggi)
@@ -330,9 +324,9 @@ class TicTacToe:
                 # Jika cell (i, j) masih kosong
                 if self.board[i][j] == ' ':
                     # Membuat pergerakan pada cell tersebut
-                    self.board[i][j] = self.bot_symbol
+                    self.board[i][j] = bot_symbol
                     # Mencari score pada fase pencarian berikutnya
-                    score = self.minimax(0, -float('inf'), float('inf'), False)
+                    score = self.minimax(0, -float('inf'), float('inf'), False, bot_symbol)
                     # Mengembalikan pergerakan pada cell tersebut
                     self.board[i][j] = ' '
                     # Jika score dari pergerakan tersebut lebih tinggi dari best_score
