@@ -37,7 +37,7 @@ class TicTacToe:
     def get_symbol_index(self, symbol: str):
         return self.player_symbols.index(symbol)
     
-    def set_symbol_player_count(self, player_count: int = 1):
+    def set_symbol_player_count(self, player_count):
         if player_count in [1, 2]:
             self.player_symbols = ['X', 'O']
             self.player_emoji = ['❌', '⭕️']
@@ -54,6 +54,8 @@ class TicTacToe:
 
     def make_random_move(self):
         (i, j) = (random.randint(0, self.size - 1), random.randint(0, self.size - 1))
+        while self.board[i][j] != ' ':
+            (i, j) = (random.randint(0, self.size - 1), random.randint(0, self.size - 1))
         self.make_move(i, j)
     
     def set_level(self, level: int):
@@ -99,26 +101,42 @@ class TicTacToe:
         if self.level == 1:
             self.make_random_move()
         else:
-            (i, j) = self.find_best_move(self.get_current_player())
-            self.make_move(i, j)
+            ((i, j), score) = self.find_best_move(self.get_current_player())
+            print(score)
+            if score == float('-inf'):
+                self.make_random_move()
+            else: self.make_move(i, j)
 
     def is_winner(self, player) -> bool:
         """
         Mengecek apakah {player} menang
         """
+        # Horizontal
         for i in range(self.size):
-            # Horizontal    
-            if all(self.board[i][j] == player for j in range(self.size)):
-                return True
-			# Vertikal
-            if all(self.board[j][i] == player for j in range(self.size)):
-                return True
-		# Diagonal dari kiri atas ke kanan bawah
-        if all(self.board[i][i] == player for i in range(self.size)):
-            return True
-		# Diagonal dari kanan atas ke kiri bawah
-        return all(self.board[i][self.size - 1 - i] == player for i in range(self.size))
-    
+            for j in range(self.size - 2):
+                if all(self.board[i][j + offset] == player for offset in range(3)):
+                    return True
+        
+        # Vertikal
+        for i in range(self.size - 2):
+            for j in range(self.size):
+                if all(self.board[i + offset][j] == player for offset in range(3)):
+                    return True
+        
+        # Diagonal ke kanan
+        for i in range(self.size - 2):
+            for j in range(self.size - 2):
+                if all(self.board[i + offset][j + offset] == player for offset in range(3)):
+                    return True
+
+        # Diagonal ke kiri
+        for i in range(self.size - 2):
+            for j in range(2, self.size):
+                if all(self.board[i + offset][j - offset] == player for offset in range(3)):
+                    return True
+        
+        return False
+                
     def get_winner(self):
         """
         Mengembalikan player yang menang.
@@ -338,4 +356,4 @@ class TicTacToe:
                         # Update best_move dengan pergerakan tersebut
                         best_move = (i, j)
         # Mengembalikan pergerakan yang paling optimal (dengan score paling tinggi)
-        return best_move
+        return (best_move, best_score)

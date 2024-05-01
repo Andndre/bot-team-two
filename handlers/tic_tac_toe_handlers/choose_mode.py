@@ -17,28 +17,10 @@ def choose_mode(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int, 
 
 def get_choose_mode_handler(jumlah_player: int):
 	def handler(teleBot: TeleBot, query_id, chat_id, message_id, username, chat_type):
-		# teleBot.bot.answerCallbackQuery(query_id, text='Mode: ' + str(jumlah_player) + ' player')
+		teleBot.bot.answerCallbackQuery(query_id, text='Mode: ' + str(jumlah_player) + ' player')
 		game: TicTacToe = TicTacToe.load(message_id)
 		msg_id = (chat_id, message_id)
-  
-		# Jika dichat pribadi maka fitur multiplayer akan nonaktif
-		if (jumlah_player == 2 or jumlah_player == 3) and chat_type == 'private':
-			teleBot.bot.answerCallbackQuery(query_id, text='Permainan multiplayer hanya untuk grup')
-			return
-		if jumlah_player == 1:
-			game.set_symbol_player_count(1)
-			game.save()
-			size_buttons(teleBot, query_id, chat_id, message_id, username, chat_type)
-		if jumlah_player == 2 and chat_type == "group":
-			game.set_symbol_player_count(2)
-			game.save()
-			teleBot.bot.editMessageText(msg_id, 'Tag lawan Anda!')
-			teleBot.bot.editMessageReplyMarkup(msg_id, reply_markup=None)
-		if jumlah_player == 3 and chat_type == "group":
-			game.set_symbol_player_count(3)
-			game.save()
-			teleBot.bot.editMessageText(msg_id, 'Menunggu pemain ketiga untuk bergabung...', 
-                                        reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Bergabung', callback_data='join')]]))
-            # Menghapus tombol mode setelah memulai permainan
-			teleBot.bot.editMessageReplyMarkup(msg_id, reply_markup=None)
+		game.set_symbol_player_count(jumlah_player)
+		game.save()
+		size_buttons(teleBot, query_id, chat_id, message_id, username, chat_type)
 	return handler

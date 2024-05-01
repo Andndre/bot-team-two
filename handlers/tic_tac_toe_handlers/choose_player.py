@@ -9,7 +9,7 @@ def choose_player(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int
     teleBot.bot.editMessageText(msg_id, 'Silahkan tag teman anda:')
     # Bot akan mengirim pesan Undangan
     
-    # Player 2 setuju, maka game dimulai
+    # Player 2 setuju, maka game dimulai 
     def on_chat_message(msg):
         content_type, chat_type, chat_id = teleBot.glance(msg)
         if content_type == 'text':

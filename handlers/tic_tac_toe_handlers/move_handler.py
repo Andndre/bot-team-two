@@ -1,6 +1,7 @@
 from bot import TeleBot
 from tic_tac_toe import TicTacToe
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
+import time
 
 def get_move_handler(row, col):
 	"""
@@ -16,10 +17,7 @@ def get_move_handler(row, col):
 		if game.game_over != 'None':
 			return
 
-		print(game.player_tags_role),
-		print(game.player_turn)
-		
-		print(username, game.get_current_username())
+		time.sleep(1)
 
 		# Abaikan klik jika giliran bukan player
 		if game.get_current_username() != username:
@@ -28,10 +26,7 @@ def get_move_handler(row, col):
 		msg_id = (chat_id, message_id)
 		moved = game.make_move_current(row, col)
 		if moved: # Jika pergerakan valid, lanjutkan dengan pergerakan bot
-			print('moved')
-			print(game.get_current_username())
 			if game.game_over == 'None' and game.get_current_username() == 'Bot': # Jika pergerakan valid, lanjutkan dengan pergerakan bot
-				print('bot bergerak')
 				teleBot.bot.answerCallbackQuery(query_id, text='Bot berfikir...')
 				game.make_ai_move()
 			game.save()
