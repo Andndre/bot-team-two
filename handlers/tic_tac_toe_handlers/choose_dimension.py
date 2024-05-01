@@ -3,7 +3,7 @@ from tic_tac_toe import TicTacToe
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
 from handlers.tic_tac_toe_handlers.choose_level import *
 
-def size_buttons(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int, username: str):
+def size_buttons(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int, username: str, chat_type: str):
 	"""
 	Menambahkan handler untuk tombol ukuran (ukuran board)
 	"""
@@ -25,13 +25,13 @@ def get_size_handler(size: int):
 	"""
 	Mengenerate handler untuk tombol ukuran (ukuran board)
 	"""
-	def handler(teleBot: TeleBot, query_id, chat_id, message_id, username):
+	def handler(teleBot: TeleBot, query_id, chat_id, message_id, username, chat_type):
 		# Buat game TicTacToe baru dengan ukuran board yang dipilih
 		game: TicTacToe = TicTacToe.load(message_id)
 		game.set_dimension(size)
 		game.save()
 
 		# Jika game belum selesai, edit message dengan pesan giliran
-		level_buttons(teleBot, query_id, chat_id, message_id, username)
+		level_buttons(teleBot, query_id, chat_id, message_id, username, chat_type)
 
 	return handler

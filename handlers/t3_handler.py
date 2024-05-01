@@ -5,7 +5,7 @@ from handlers.tic_tac_toe_handlers.choose_dimension import *
 from handlers.tic_tac_toe_handlers.choose_mode import *
 from handlers.tic_tac_toe_handlers.move_handler import *
 
-def replay(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int, user_id: int):
+def replay(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int, user_id: int, chat_type: str):
 	"""
 	Handler untuk tombol 'Mulai Lagi'
 	"""
@@ -18,7 +18,7 @@ def replay(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int, user_
 	teleBot.bot.editMessageText(msg_id, 'Pilih simbolmu:')
 	teleBot.bot.editMessageReplyMarkup(msg_id, reply_markup=buttons)
 
-def end_game(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int, user_id: int):
+def end_game(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int, user_id: int, chat_type:str):
 	"""
 	Handler untuk tombol 'Selesai'
 	"""
@@ -35,7 +35,7 @@ def get_text_game_over(self):
 		winner = self.get_winner()
 		return f'Pemenangnya adalah {winner}!'
 	
-def tic_tac_toe_handler(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int, user_id: int):
+def tic_tac_toe_handler(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int, user_id: int, chat_type:str):
 	"""
 	Handler untuk tombol memulai game Tic Tac Toe
 	"""
@@ -43,7 +43,7 @@ def tic_tac_toe_handler(teleBot: TeleBot, query_id: int, chat_id: int, message_i
 	game = TicTacToe(message_id)
 	game.player_tags.append(user_id)
 	game.save()
-	choose_mode(teleBot, query_id, chat_id, message_id, user_id)
+	choose_mode(teleBot, query_id, chat_id, message_id, user_id, chat_type)
 
 # Pemanggilan fungsi di folder t3 handler
 def add_tic_tac_toe_handlers(teleBot: TeleBot):

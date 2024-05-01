@@ -75,7 +75,7 @@ class TicTacToe:
         ex. "Giliran O (Bot)"
         """
         username = self.get_current_username()
-        return f'Giliran {self.get_symbol_emoji_current()} @{username if username != '' else "Bot"}'
+        return f"Giliran {self.get_symbol_emoji_current()} {'@' + username if username != '' else 'Bot'}"
     
     def get_text_game_over(self):
         """
