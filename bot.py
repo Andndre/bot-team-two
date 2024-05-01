@@ -34,7 +34,6 @@ class TeleBot:
                 [InlineKeyboardButton(text='Main Tic Tac Toe', callback_data='tic_tac_toe')]
             ])
             self.bot.sendMessage(chat_id, 'Halo selamat datang di Bot, silahkan pilih opsi dibawah:', reply_markup=keyboard)
-        print(msg['text'])
     
     def add_t3_game(self, message_id: int, game: TicTacToe) -> None:
         """
@@ -42,11 +41,11 @@ class TeleBot:
         """
         self.t3_games[message_id] = game
     
-    def get_t3_game(self, message_id: int) -> TicTacToe:
-        """
-        Mengambil game Tic Tac Toe berdasarkan message ID
-        """
-        return self.t3_games[message_id]
+    # def get_t3_game(self, message_id: int) -> TicTacToe:
+    #     """
+    #     Mengambil game Tic Tac Toe berdasarkan message ID
+    #     """
+    #     return self.t3_games[message_id]
 
     def run(self) -> None:
         """
@@ -70,7 +69,15 @@ class TeleBot:
         query_id, _, query_data = telepot.glance(msg, flavor='callback_query')
         chat_id = msg['message']['chat']['id']
         message_id = msg['message']['message_id']
-        user_id = msg['message']['from']['id']
+        username = msg['from']['username']
+        # print(msg)
+        
+        # Memeriksa apakah pesan diterima dalam obrolan grup atau pesan pribadi
+        chat_type = msg['message']['chat']['type']
 
-        self.handlers[query_data](self, query_id, chat_id, message_id, user_id)
+        # Mengecek jenis chat dan isi dari var msg
+        print(f"Callback query ditekan secara {chat_type}")
+        # print(f"Isi msg: {msg}")
+        
+        self.handlers[query_data](self, query_id, chat_id, message_id, username, chat_type)
 
