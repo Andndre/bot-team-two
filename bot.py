@@ -71,6 +71,13 @@ class TeleBot:
         message_id = msg['message']['message_id']
         username = msg['from']['username']
         # print(msg)
+        
+        # Memeriksa apakah pesan diterima dalam obrolan grup atau pesan pribadi
+        chat_type = msg['message']['chat']['type']
 
-        self.handlers[query_data](self, query_id, chat_id, message_id, username)
+        # Mengecek jenis chat dan isi dari var msg
+        print(f"Callback query ditekan secara {chat_type}")
+        # print(f"Isi msg: {msg}")
+        
+        self.handlers[query_data](self, query_id, chat_id, message_id, username, chat_type)
 
