@@ -4,7 +4,6 @@ import pickle
 import os
 
 class TicTacToe:
-    
     def __init__(self, message_id: int):
         self.game_over = 'None'
         self.size = 0
@@ -57,7 +56,7 @@ class TicTacToe:
         while self.board[i][j] != ' ':
             (i, j) = (random.randint(0, self.size - 1), random.randint(0, self.size - 1))
         self.make_move(i, j)
-    
+
     def set_level(self, level: int):
         self.level = level
 
@@ -65,12 +64,23 @@ class TicTacToe:
         """
         Menghasilkan tombol 3x3, 4x4, atau 5x5 berisi simbol X dan O (atau dan Y) sesuai state game saat ini
         """
-        buttons = InlineKeyboardMarkup(inline_keyboard=[
+        inline_keyboards = [
             [
                 InlineKeyboardButton(text=f'{self.get_symbol_emoji_at(i, j)}', callback_data=f'pos_{i}_{j}') for j in range(self.size)
             ] for i in range(self.size)
-        ])
+        ]
+
+        if self.game_over != 'None':
+            inline_keyboards.append([InlineKeyboardButton(text="Main Lagi", callback_data="play_again")])
+
+        buttons = InlineKeyboardMarkup(inline_keyboard=inline_keyboards)
+
         return buttons
+    
+    def reset_board(self):
+        self.board = [[' ']*self.size for _ in range(self.size)]
+        self.player_turn = 0
+        self.game_over = 'None'
 
     def get_text_giliran(self):
         """
@@ -105,7 +115,8 @@ class TicTacToe:
             print(score)
             if score == float('-inf'):
                 self.make_random_move()
-            else: self.make_move(i, j)
+            else: 
+                self.make_move(i, j)
 
     def is_winner(self, player) -> bool:
         """

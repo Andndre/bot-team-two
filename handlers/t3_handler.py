@@ -4,6 +4,7 @@ from handlers.tic_tac_toe_handlers.choose_symbol import *
 from handlers.tic_tac_toe_handlers.choose_dimension import *
 from handlers.tic_tac_toe_handlers.choose_mode import *
 from handlers.tic_tac_toe_handlers.move_handler import *
+from handlers.tic_tac_toe_handlers.replay_handler import *
 
 def replay(teleBot: TeleBot, query_id: int, chat_id: int, message_id: int, user_id: int, chat_type: str):
 	"""
@@ -72,6 +73,8 @@ def add_tic_tac_toe_handlers(teleBot: TeleBot):
 	teleBot.add_handler('easy_mode', get_level_handler("Easy"))
 	teleBot.add_handler('medium_mode', get_level_handler("Medium"))
 	teleBot.add_handler('impossible_mode', get_level_handler("Impossible"))
+
+	teleBot.add_handler('play_again', play_again_handler)
 
 	# Menambahkan handler untuk pilihan posisi (dalam permainan)
 	for row in range(5):
