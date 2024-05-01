@@ -37,7 +37,7 @@ def get_symbol_handler(symbol: str):
 		
 		if game.player_count == 1:
 			game.assign_symbol_username(username, symbol)
-			if game.get_current_username() == '':
+			if game.get_current_username() == 'Bot':
 				game.make_ai_move()
 			game.save()
 			# Edit pesan untuk menampilkan pesan giliran

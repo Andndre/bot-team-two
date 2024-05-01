@@ -48,11 +48,13 @@ class TicTacToe:
         return self.player_symbols[self.player_turn]
 
     def get_current_username(self):
-        return self.player_tags_role[self.player_turn]
+        username = self.player_tags_role[self.player_turn]
+        if username == '': return 'Bot'
+        return username
 
     def make_random_move(self):
         (i, j) = (random.randint(0, self.size - 1), random.randint(0, self.size - 1))
-        self.make_move(i, j, self.get_current_player())
+        self.make_move(i, j)
     
     def set_level(self, level: int):
         self.level = level
@@ -227,7 +229,7 @@ class TicTacToe:
 
         # Cek apakah ada pemenang
         winner = self.get_winner()
-        if winner or (self.level == 2 and depth >= 10):
+        if winner or (self.level == 2 and depth >= 3):
             # Jika pemenang adalah player bot, maka nilai scorenya diubah menjadi
             # 10 - depth, yang artinya lebih tinggi daripada score lainnya.
             # Jika pemenang adalah player pemain, maka nilai scorenya diubah menjadi

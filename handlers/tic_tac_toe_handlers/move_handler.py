@@ -30,7 +30,7 @@ def get_move_handler(row, col):
 		if moved: # Jika pergerakan valid, lanjutkan dengan pergerakan bot
 			print('moved')
 			print(game.get_current_username())
-			if game.game_over == 'None' and game.get_current_username() == '': # Jika pergerakan valid, lanjutkan dengan pergerakan bot
+			if game.game_over == 'None' and game.get_current_username() == 'Bot': # Jika pergerakan valid, lanjutkan dengan pergerakan bot
 				print('bot bergerak')
 				teleBot.bot.answerCallbackQuery(query_id, text='Bot berfikir...')
 				game.make_ai_move()

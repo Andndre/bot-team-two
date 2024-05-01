@@ -42,8 +42,13 @@ def tic_tac_toe_handler(teleBot: TeleBot, query_id: int, chat_id: int, message_i
 	teleBot.bot.answerCallbackQuery(query_id, text='Memulai game Tic Tac Toe')
 	game = TicTacToe(message_id)
 	game.player_tags.append(user_id)
-	game.save()
-	choose_mode(teleBot, query_id, chat_id, message_id, user_id, chat_type)
+	if chat_type == 'private':
+		game.set_symbol_player_count(1)
+		game.save()
+		size_buttons(teleBot, query_id, chat_id, message_id, user_id, chat_type)
+	else:
+		game.save()
+		choose_mode(teleBot, query_id, chat_id, message_id, user_id, chat_type)
 
 # Pemanggilan fungsi di folder t3 handler
 def add_tic_tac_toe_handlers(teleBot: TeleBot):
